@@ -13,7 +13,6 @@ pub fn randfloat(low: f64, high: f64, n: i32, seed: u64) -> Vec<f64> {
     return numbers;
 }
 
-/*corregir generacion de matriz aleatoria */
 #[allow(dead_code)]
 pub fn randfloatmatrix(low: f64, high: f64, rows: i32, cols: i32, seed: u64) -> Vec<Vec<f64>> {
     let mut matrix = Vec::new();
@@ -60,6 +59,7 @@ pub fn lineal_transform(w:Vec<Vec<f64>>,x: Vec<f64>)-> Vec<f64>{
 pub fn add_vecs(a: Vec<f64>, b: Vec<f64>) -> Vec<f64> {
     if a.len() != b.len() {
         panic!("The number of elements in the vectors must be equal");
+        
     }
     let mut result = Vec::new();
     for i in 0..a.len() {

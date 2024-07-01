@@ -1,6 +1,6 @@
 use crate::layer::Layer;
 use std::vec;
-pub struct NeuronalNetwork {
+pub struct NeuralNetwork {
     pub loss: String,
     pub optimizer: String,
     pub metrics: String,
@@ -8,7 +8,7 @@ pub struct NeuronalNetwork {
 }
 
 #[allow(dead_code)]
-impl NeuronalNetwork {
+impl NeuralNetwork {
     pub fn new(
         units: i32,
         input_dim: i32,
@@ -16,9 +16,9 @@ impl NeuronalNetwork {
         optimizer: String,
         metrics: String,
         activation: String,
-    ) -> NeuronalNetwork {
+    ) -> NeuralNetwork {
         let input = Layer::new(units, input_dim, activation);
-        NeuronalNetwork {
+        NeuralNetwork {
             loss,
             optimizer,
             metrics,
@@ -26,8 +26,34 @@ impl NeuronalNetwork {
         }
     }
 
+    pub fn forward(&mut self, inputs: Vec<f64>) -> Vec<f64> {
+        let mut output = inputs.clone();
+        for i in 0..self.layers.len() {
+            output = self.layers[i].forward(output);
+        }
+        output
+    }
+
+    pub fn add(&mut self, units: i32, activation: String) {
+        let input_dim = self.layers[self.layers.len() - 1].rows;
+        let layer = Layer::new(units, input_dim, activation);
+        self.layers.push(layer);
+    }
+
+    fn softmax(&self, x: Vec<f64>) -> Vec<f64> {
+        let mut sum = 0.0;
+        let mut result = vec![0.0; x.len()];
+        for i in 0..x.len() {
+            sum += x[i].exp();
+        }
+        for i in 0..x.len() {
+            result[i] = x[i].exp() / sum;
+        }
+        result
+    }
+
     pub fn show_details(&self) {
-        println!("---------------Neuronal Network Details------------------");
+        println!("---------------Neural Network Details------------------");
         println!("Loss: {:?}", self.loss);
         println!("Optimizer: {:?}", self.optimizer);
         println!("Metrics: {:?}\n", self.metrics);
