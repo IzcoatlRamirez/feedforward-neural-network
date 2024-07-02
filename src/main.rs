@@ -1,21 +1,25 @@
 mod dataframe;
+mod layer;
 mod network;
 mod numrs;
-mod layer;
+use numrs::ohe::{one_hot_encoding, one_hot_encoding_target};
 
-/*construir funciones para obtener (ademas se almacenaran en su capa correspondiente durante el forward pass?):
--> derivada de la funcion de activacion con respecto a la entrada z 
--> derivada de la funcion de costo con respecto a la activacion a
--> vector de deltas para la capa de salida
--> vector de deltas para las capas ocultas
-
-Esto implica verificar que campos nuevos se agregaran a la estructura de la capa:
-    inputs
-    outputs
-    deltas
-    vector de derivadas de la funcion de activacion con respecto a la entrada z (ac/az)
-    vector de derivadas de la funcion de costo con respecto a la activacion a   (ac/aa)
-*/
 fn main() {
+    let n_examples = 100;
 
+    let x = one_hot_encoding(n_examples, 10);
+    let y = one_hot_encoding_target(n_examples, 3);
+
+    let (x_train, x_test, y_train, y_test) = dataframe::df::simple_split_one_hot(x, y, 0.7);
+
+    let mut model = network::NeuralNetwork::new(
+        10,
+        10,
+        "categorical_crossentropy".to_string(),
+        "gd".to_string(),
+        "accuracy".to_string(),
+        "relu".to_string(),
+    );
+
+    
 }
