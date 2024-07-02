@@ -68,6 +68,34 @@ pub fn add_vecs(a: Vec<f64>, b: Vec<f64>) -> Vec<f64> {
     return result;
 }
 
+#[allow(dead_code)]	
+pub fn hadamard(a: Vec<f64>, b: Vec<f64>) -> Vec<f64> {
+    if a.len() != b.len() {
+        panic!("The number of elements in the vectors must be equal");
+    }
+    let mut result = Vec::new();
+    for i in 0..a.len() {
+        result.push(a[i] * b[i]);
+    }
+    return result;
+
+}
+
+
+#[allow(dead_code)]
+pub fn outer(a:Vec<f64>,b: Vec<f64>) -> Vec<Vec<f64>>{
+    let mut result = Vec::new();
+    for element in a.iter(){
+        let mut row = Vec::new();
+        for element2 in b.iter(){
+            row.push(element * element2);
+        }
+        result.push(row);
+    }
+    return result;
+}
+
+
 
 #[allow(dead_code)]
 pub mod metrics {

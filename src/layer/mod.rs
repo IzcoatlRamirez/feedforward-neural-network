@@ -1,10 +1,11 @@
 use crate::numrs::{add_vecs, lineal_transform, randfloatmatrix};
 use std::vec;
 pub struct Layer {
-    pub weights: Vec<Vec<f64>>, /*matrix of weights*/
-    pub biases: Vec<f64>,       /*vec of bias */
-    pub activation: String,     /*activation function*/
-    pub output: Vec<f64>,       /*The output of the layer is necessary for backpropagation*/
+    pub weights: Vec<Vec<f64>>,  /*matrix of weights*/
+    pub biases: Vec<f64>,        /*vec of bias */
+    pub activation: String,      /*activation function*/
+    pub input: Vec<f64>,         /*The input of the layer is necessary for backpropagation*/
+    pub deltas: Vec<f64>,         /*The delta of the layer is necessary for backpropagation*/
     pub rows: i32,
     pub cols: i32,
 }
@@ -24,11 +25,13 @@ impl Layer {
             activation,
             rows: units,
             cols: input_dim,
-            output: Vec::new(),
+            input: Vec::new(),
+            deltas: Vec::new(),
         }
     }
 
     pub fn forward(&mut self, inputs: Vec<f64>) -> Vec<f64> {
+        self.input = inputs.clone();
         let mut output = lineal_transform(self.weights.clone(), inputs.clone());
         output = add_vecs(output, self.biases.clone());
         match self.activation.as_str() {
@@ -45,7 +48,6 @@ impl Layer {
                 panic!("Activation function not implemented");
             }
         }
-        self.output = output.clone();
         return output;
     }
 
