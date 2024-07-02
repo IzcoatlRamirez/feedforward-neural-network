@@ -108,7 +108,7 @@ pub mod math {
 }
 //funcion que crea n vectores one-hot-encoding
 #[allow(dead_code)]
-pub mod ohe{
+pub mod ohe {
     use rand::Rng;
     pub fn one_hot_encoding_target(n_vectors: i32, n_classes: i32) -> Vec<Vec<i32>> {
         let mut result = Vec::new();
@@ -120,7 +120,7 @@ pub mod ohe{
         }
         return result;
     }
-    
+
     pub fn one_hot_encoding(n_examples: i32, n_dimens: i32) -> Vec<Vec<f64>> {
         let mut result = Vec::new();
         for _ in 0..n_examples {

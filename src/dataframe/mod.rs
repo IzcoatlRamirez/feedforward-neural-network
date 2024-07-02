@@ -45,10 +45,10 @@ pub mod df {
         let n_train = x.len() as f64 * train_ratio;
 
         let x_train = x[0..n_train as usize].to_vec();
-        let x_test =  x[(n_train as usize)..].to_vec();
+        let x_test = x[(n_train as usize)..].to_vec();
 
         let y_train = y[0..n_test as usize].to_vec();
-        let y_test =  y[(n_test as usize)..].to_vec();
+        let y_test = y[(n_test as usize)..].to_vec();
         (x_train, x_test, y_train, y_test)
     }
 }
