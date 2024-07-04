@@ -7,5 +7,6 @@ edition = "2021"
 
 [dependencies]
 rand="*"
-serde="*"
 serde_json ="*"
+csv = "1.1"
+serde = { version = "1.0", features = ["derive"] }

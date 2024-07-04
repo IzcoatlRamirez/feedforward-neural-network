@@ -4,11 +4,11 @@ use crate::numrs::math::{add_vecs, lineal_transform};
 use crate::numrs::randgen::randfloatmatrix;
 #[derive(Clone)]
 pub struct Layer {
-    pub weights: Vec<Vec<f64>>, //matrix of weights
-    pub biases: Vec<f64>,       //vec of bias
-    pub activation: String,     //activation function
-    pub input: Vec<f64>,        //The input of the layer is necessary for backpropagation
-    pub deltas: Vec<f64>,       //The delta of the layer is necessary for backpropagation
+    pub weights: Vec<Vec<f64>>, 
+    pub biases: Vec<f64>,       
+    pub activation: String,     
+    pub input: Vec<f64>,        
+    pub deltas: Vec<f64>,       
     pub aa_az: Vec<f64>,        //derivada de la funcion de activacion con respecto a la entrada z
     pub ac_aa: Vec<f64>,        //derivada de la funcion de costo con respecto a la activacion a
     pub rows: i32,
@@ -30,10 +30,10 @@ impl Layer {
             activation,
             rows: units,
             cols: input_dim,
-            input: Vec::new(),  /*este valor se puede obtener durante el forward */
-            deltas: Vec::new(), /*este valor se puede obtener durante el backward */
-            aa_az: Vec::new(),  /*este valor se puede obtener durante el forward */
-            ac_aa: Vec::new(),  /*este valor se puede obtener durante el backward */
+            input: Vec::new(),  
+            deltas: Vec::new(), 
+            aa_az: Vec::new(),  
+            ac_aa: Vec::new(),  
         }
     }
 
@@ -43,7 +43,6 @@ impl Layer {
         output = add_vecs(output, self.biases.clone());
         match self.activation.as_str() {
             "relu" => {
-                /*en este punto aun no se aplica la funcion de activacion */
                 self.aa_az = relu_derivative(output.clone());
                 output = relu(output);
             }

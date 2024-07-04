@@ -8,7 +8,6 @@ pub mod derivate {
         return result;
     }
 
-    /*cambiar por la real */
     pub fn cross_entropy_derivative(activation: Vec<f64>, prediction: Vec<i32>) -> Vec<f64> {
         let mut result = vec![0.0; activation.len()];
         for i in 0..activation.len() {
