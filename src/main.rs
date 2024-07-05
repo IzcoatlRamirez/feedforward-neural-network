@@ -7,6 +7,7 @@ mod network;
 mod numrs;
 use dataframe::datacsv::read_data_csv;
 use serde::{Deserialize, Serialize};
+use numrs::metrics::accuracy_score_ohe;
 
 /*automatizar crear el struct pertinente?*/
 #[derive(Debug, Deserialize, Serialize)]
@@ -22,27 +23,38 @@ struct Person {
     outcome: i32,
 }
 
+
+/*implementar ajustar bias 
+revisar clamp de los datos (hacerlo en cada operacion con el fin de evitar desbordamiento no permite actualizar los peso
+s de  manera correcta?)
+eliminar rounded en operaciones ya que al final se usara clamp?
+hacer clamp de los outputs no de los pesos o deltas?
+*/
+
+
+
 fn main() {
     let num_classes = 2;
     let path = "diabetes.csv";
 
     let (x, y) = read_data_csv::<_, Person>(path, num_classes).unwrap();
-    let (x_train, x_test, y_train, y_test) = dataframe::df::simple_split_one_hot(x, y, 0.7);
+    let (x_train, x_test, y_train, y_test) = dataframe::df::simple_split_one_hot(x, y, 0.70);
 
-    println!("x_train: {:?}", x_train);
-    println!("y_train: {:?}", y_train);
-    println!("x_test: {:?}", x_test);
-    println!("y_test: {:?}", y_test);
+    let mut nn = network::NeuralNetwork::new(32, 8, "mse".to_string(), "gd".to_string(), "relu".to_string());
+    nn.add(16, "sigmoid".to_string());
+    nn.add(8, "relu".to_string());
+    nn.add(2, "sigmoid".to_string());
+
+    nn.fit(x_train, y_train, 0.01, 1);
+
+    let mut test = Vec::new();
+    for i in 0..x_test.len() {
+        test.push(nn.forward(x_test[i].clone()));
+    }
+
+    let accuracy = accuracy_score_ohe(y_test, test);
+    println!("Accuracy: {}", accuracy);
+
 }
 
-// let n_examples = 10;
 
-// let x = one_hot_encoding(n_examples, 10);
-// let y = one_hot_encoding_target(n_examples, 3);
-
-// let (x_train, x_test, y_train, y_test) = dataframe::df::simple_split_one_hot(x, y, 0.7);
-
-// println!("x_train: {:?}", x_train);
-// println!("y_train: {:?}", y_train);
-// println!("x_test: {:?}", x_test);
-// println!("y_test: {:?}", y_test);

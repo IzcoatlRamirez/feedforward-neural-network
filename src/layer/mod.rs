@@ -25,7 +25,7 @@ impl Layer {
     pub fn new(units: i32, input_dim: i32, activation: String) -> Layer {
         Layer {
             /*decidir si generar una matriz aleatoria cambiando la semilla */
-            weights: randfloatmatrix(-1.0, 1.0, units, input_dim, 0),
+            weights: randfloatmatrix(-0.1, 0.1, units, input_dim),
             biases: vec![1.0; units as usize],
             activation,
             rows: units,
