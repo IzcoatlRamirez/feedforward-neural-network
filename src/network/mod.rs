@@ -29,11 +29,7 @@ impl NeuralNetwork {
         for i in 0..self.layers.len() {
             output = self.layers[i].forward(output);
         }
-        //println!("Output: {:?}", output.clone());
-        //println!("Normalized Output: {:?}", normalize_ouput(output.clone()));
-        //normalize_ouput(output.clone())
-        //println!("Output: {:?}", output.clone());
-        output
+        normalize_ouput(output)
     }
 
     //ahora la etiqueta del ejemplo es un vector one-hot-encoding
@@ -71,10 +67,6 @@ impl NeuralNetwork {
             self.layers[i].show_details();
             println!();
         }
-    }
-
-   fn esta_funcion_es_privada(&self) {
-        println!("Esta funcion es privada");
     }
 
     fn show_layers(&self) {

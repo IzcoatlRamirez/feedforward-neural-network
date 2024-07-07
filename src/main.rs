@@ -9,7 +9,6 @@ use dataframe::datacsv::read_data_csv;
 use serde::{Deserialize, Serialize};
 use numrs::metrics::accuracy_score_ohe;
 
-/*automatizar crear el struct pertinente?*/
 #[derive(Debug, Deserialize, Serialize)]
 struct Person {
     pregnancies: f64,
@@ -22,13 +21,18 @@ struct Person {
     age: f64,
     outcome: i32,
 }
+/*
+Pendiente:
+    - implementar ajuste de los bias
+    - evitar la explosion del gradiente (mantener los pesos y bias entre rangos de [-1, 1] y 
+    mantener el gradiente entre rangos de [-5, 5] o [-10, 10] para evitar la explosion del gradiente)
+    - revisar estabilidad 
 
 
-/*implementar ajustar bias 
-revisar clamp de los datos (hacerlo en cada operacion con el fin de evitar desbordamiento no permite actualizar los peso
-s de  manera correcta?)
-eliminar rounded en operaciones ya que al final se usara clamp?
-hacer clamp de los outputs no de los pesos o deltas?
+Notas:
+    - al convertir los outputs en etiqutas definidas , si estos contienen NaN (por la explosion del gradiente)
+    se convierten en un tipo de etiqueta que crea un falso acurracy que no cambia con las iteraciones puesto que ya siempre produce
+    esos nan creando esas falsas etiquetas problematicas
 */
 
 fn main() {
@@ -56,6 +60,7 @@ fn main() {
 
     let accuracy = accuracy_score_ohe(y_test, test);
     println!("Accuracy: {}", accuracy);
+
 
 }
 

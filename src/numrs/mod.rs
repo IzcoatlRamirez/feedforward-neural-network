@@ -21,7 +21,6 @@ pub mod randgen {
             let mut row = Vec::new();
             for _ in 0..cols {
                 let random_number = rng.gen_range(low..high);
-                //row.push(round_to_n_decimals(random_number));
                 row.push(random_number);
             }
             matrix.push(row);
@@ -47,6 +46,11 @@ pub mod math {
     /*funcion que recibe un vector y el mayor de sus elementos los convierte en numero y los demas en 0 y retorna el vector resultante*/
     pub fn normalize_ouput(output: Vec<f64>) -> Vec<f64> {
         let max_index = find_max_index(output.clone());
+
+        if output[max_index].is_nan() {
+            panic!("The output contains NaN values");
+        }
+
         let mut result = vec![0.0; output.len()];
         result[max_index] = 1.0;
         return result;
@@ -97,13 +101,10 @@ pub mod math {
         for i in 0..w.len() {
             let mut sum = 0.0;
             for j in 0..w[i].len() {
-                //sum += round_to_n_decimals(w[i][j] * x[j]);
                 sum += w[i][j] * x[j];
             }
             result.push(sum);
         }
-
-        //return clamped(result);}
         return result;
     }
 
@@ -113,10 +114,8 @@ pub mod math {
         }
         let mut result = Vec::new();
         for i in 0..a.len() {
-            //result.push(round_to_n_decimals(a[i] + b[i]));
             result.push(a[i] + b[i]);
         }
-        //return clamped(result);
         return result;
     }
 
@@ -126,10 +125,8 @@ pub mod math {
         }
         let mut result = Vec::new();
         for i in 0..a.len() {
-            //result.push(round_to_n_decimals(a[i] * b[i]));
             result.push(a[i] * b[i]);
         }
-        //return clamped(result);
         return result;
     }
 
@@ -138,10 +135,8 @@ pub mod math {
         for element in a.iter() {
             let mut row = Vec::new();
             for element2 in b.iter() {
-                //row.push(round_to_n_decimals(element * element2));
                 row.push(element * element2);
             }
-            //result.push(clamped(row));
             result.push(row);
         }
         return result;
