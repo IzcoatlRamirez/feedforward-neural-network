@@ -3,7 +3,7 @@ pub mod randgen {
     use rand::rngs::StdRng;
     use rand::Rng;
     use rand::SeedableRng;
-    use crate::numrs::math::round_to_n_decimals;
+    //use crate::numrs::math::round_to_n_decimals;
     pub fn randfloat(low: f64, high: f64, n: i32, seed: u64) -> Vec<f64> {
         let mut numbers = Vec::new();
         let mut rng = StdRng::seed_from_u64(seed);
@@ -21,7 +21,8 @@ pub mod randgen {
             let mut row = Vec::new();
             for _ in 0..cols {
                 let random_number = rng.gen_range(low..high);
-                row.push(round_to_n_decimals(random_number));
+                //row.push(round_to_n_decimals(random_number));
+                row.push(random_number);
             }
             matrix.push(row);
         }
@@ -63,7 +64,7 @@ pub mod math {
         return max_index;
     }
 
-    pub fn clamped(values:Vec<f64>)->Vec<f64>{
+    pub fn clamped(values: Vec<f64>) -> Vec<f64> {
         let min_value = -1.0;
         let max_value = 1.0;
         // Aplicando clamp a cada valor
@@ -74,13 +75,21 @@ pub mod math {
         return clamped_result;
     }
 
-    pub fn round_to_n_decimals(value: f64) -> f64 {
-        let n = 20;
+    pub fn round_vec(value: Vec<f64>) -> Vec<f64> {
+        let mut result = Vec::new();
+        for i in 0..value.len() {
+            result.push(round_f64(value[i]));
+        }
+        return result;
+    }
+
+    pub fn round_f64(value: f64) -> f64 {
+        let n = 5;
         let factor = 10f64.powi(n as i32);
         (value * factor).round() / factor
     }
 
-    pub fn lineal_transform(w: Vec<Vec<f64>>,x : Vec<f64>) -> Vec<f64> {
+    pub fn lineal_transform(w: Vec<Vec<f64>>, x: Vec<f64>) -> Vec<f64> {
         if w[0].len() != x.len() {
             panic!("The number of columns of the matrix w must be equal to the number of elements in the vector x");
         }
@@ -88,12 +97,14 @@ pub mod math {
         for i in 0..w.len() {
             let mut sum = 0.0;
             for j in 0..w[i].len() {
-                sum += round_to_n_decimals(w[i][j] * x[j]);
+                //sum += round_to_n_decimals(w[i][j] * x[j]);
+                sum += w[i][j] * x[j];
             }
             result.push(sum);
         }
-        
-        return clamped(result);
+
+        //return clamped(result);}
+        return result;
     }
 
     pub fn add_vecs(a: Vec<f64>, b: Vec<f64>) -> Vec<f64> {
@@ -102,9 +113,11 @@ pub mod math {
         }
         let mut result = Vec::new();
         for i in 0..a.len() {
-            result.push(round_to_n_decimals(a[i] + b[i]));
+            //result.push(round_to_n_decimals(a[i] + b[i]));
+            result.push(a[i] + b[i]);
         }
-        return clamped(result);
+        //return clamped(result);
+        return result;
     }
 
     pub fn hadamard(a: Vec<f64>, b: Vec<f64>) -> Vec<f64> {
@@ -113,9 +126,11 @@ pub mod math {
         }
         let mut result = Vec::new();
         for i in 0..a.len() {
-            result.push(round_to_n_decimals(a[i] * b[i]));
+            //result.push(round_to_n_decimals(a[i] * b[i]));
+            result.push(a[i] * b[i]);
         }
-        return clamped(result);
+        //return clamped(result);
+        return result;
     }
 
     pub fn outer(a: Vec<f64>, b: Vec<f64>) -> Vec<Vec<f64>> {
@@ -123,9 +138,11 @@ pub mod math {
         for element in a.iter() {
             let mut row = Vec::new();
             for element2 in b.iter() {
-                row.push(round_to_n_decimals(element * element2));
+                //row.push(round_to_n_decimals(element * element2));
+                row.push(element * element2);
             }
-            result.push(clamped(row));
+            //result.push(clamped(row));
+            result.push(row);
         }
         return result;
     }
@@ -204,5 +221,39 @@ pub mod metrics {
         }
         println!("correct: {:?}", correct);
         return correct as f64 / y_true.len() as f64;
+    }
+}
+
+pub mod scaler {
+
+    pub fn standard_scaler(data: Vec<Vec<f64>>) -> Vec<Vec<f64>> {
+        let mut result = Vec::new();
+        let mut means = Vec::new();
+        let mut stds = Vec::new();
+        let n = data.len() as f64;
+        let m = data[0].len() as f64;
+        for j in 0..m as usize {
+            let mut sum = 0.0;
+            for i in 0..n as usize {
+                sum += data[i][j];
+            }
+            let mean = sum / n;
+            means.push(mean);
+            let mut sum = 0.0;
+            for i in 0..n as usize {
+                sum += (data[i][j] - mean).powi(2);
+            }
+            let std = (sum / n).sqrt();
+            stds.push(std);
+        }
+        for i in 0..n as usize {
+            let mut row = Vec::new();
+            for j in 0..m as usize {
+                let value = (data[i][j] - means[j]) / stds[j];
+                row.push(value);
+            }
+            result.push(row);
+        }
+        return result;
     }
 }

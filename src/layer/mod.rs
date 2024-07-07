@@ -1,6 +1,6 @@
 use crate::activation_fn::derivate::{relu_derivative, sigmoid_derivative, softmax_derivative};
 use crate::activation_fn::{relu, sigmoid, softmax};
-use crate::numrs::math::{add_vecs, lineal_transform};
+use crate::numrs::math::{add_vecs, lineal_transform, round_vec};
 use crate::numrs::randgen::randfloatmatrix;
 #[derive(Clone)]
 pub struct Layer {
@@ -24,8 +24,7 @@ impl Layer {
     */
     pub fn new(units: i32, input_dim: i32, activation: String) -> Layer {
         Layer {
-            /*decidir si generar una matriz aleatoria cambiando la semilla */
-            weights: randfloatmatrix(-0.1, 0.1, units, input_dim),
+            weights: randfloatmatrix(-1.0, 1.0, units, input_dim),
             biases: vec![1.0; units as usize],
             activation,
             rows: units,
@@ -44,15 +43,15 @@ impl Layer {
         match self.activation.as_str() {
             "relu" => {
                 self.aa_az = relu_derivative(output.clone());
-                output = relu(output);
+                output = round_vec(relu(output));
             }
             "sigmoid" => {
                 self.aa_az = sigmoid_derivative(output.clone());
-                output = sigmoid(output);
+                output = round_vec(sigmoid(output));
             }
             "softmax" => {
                 self.aa_az = softmax_derivative(output.clone());
-                output = softmax(output);
+                output = round_vec(softmax(output));
             }
             _ => {
                 panic!("Activation function not implemented");
