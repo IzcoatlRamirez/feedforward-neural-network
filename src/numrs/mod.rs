@@ -14,6 +14,16 @@ pub mod randgen {
         return numbers;
     }
 
+    pub fn rand_vec(low:f64,high: f64,n: i32)-> Vec<f64>{
+        let mut numbers = Vec::new();
+        let mut rng = rand::thread_rng();
+        for _ in 0..n {
+            let random_number = rng.gen_range(low..high);
+            numbers.push(random_number);
+        }
+        return numbers;
+    }
+
     pub fn randfloatmatrix(low: f64, high: f64, rows: i32, cols: i32) -> Vec<Vec<f64>> {
         let mut matrix = Vec::new();
         let mut rng = rand::thread_rng();
@@ -68,15 +78,21 @@ pub mod math {
         return max_index;
     }
 
-    pub fn clamped(values: Vec<f64>) -> Vec<f64> {
-        let min_value = -1.0;
-        let max_value = 1.0;
-        // Aplicando clamp a cada valor
+    pub fn clamped(values: Vec<f64>,min:f64,max:f64) -> Vec<f64> {
         let clamped_result: Vec<f64> = values
             .iter()
-            .map(|&x| x.clamp(min_value, max_value))
+            .map(|&x| x.clamp(min, max))
             .collect();
         return clamped_result;
+    }
+
+    pub fn clamped_matrix(matrix: Vec<Vec<f64>>,min:f64,max:f64) -> Vec<Vec<f64>> {
+        let mut result = Vec::new();
+        for i in 0..matrix.len() {
+            let row = clamped(matrix[i].clone(),min,max);
+            result.push(row);
+        }
+        return result;
     }
 
     pub fn round_vec(value: Vec<f64>) -> Vec<f64> {
@@ -88,7 +104,7 @@ pub mod math {
     }
 
     pub fn round_f64(value: f64) -> f64 {
-        let n = 5;
+        let n = 7;
         let factor = 10f64.powi(n as i32);
         (value * factor).round() / factor
     }
@@ -210,8 +226,14 @@ pub mod metrics {
     pub fn accuracy_score_ohe(y_true: Vec<Vec<i32>>, y_pred: Vec<Vec<f64>>) -> f64 {
         let mut correct = 0;
         for i in 0..y_true.len() {
+            println!("i : {:?}", i);
             if is_equal_vec(y_true[i].clone(), y_pred[i].clone()) {
+                println!("is equal y_true: {:?} y_pred: {:?}", y_true[i], y_pred[i]);
                 correct += 1;
+            }
+            else {
+                println!("not equal y_true: {:?} y_pred: {:?}", y_true[i], y_pred[i]);
+            
             }
         }
         println!("correct: {:?}", correct);

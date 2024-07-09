@@ -44,6 +44,10 @@ pub fn softmax(x: Vec<f64>) -> Vec<f64> {
         sum += x[i].exp();
     }
 
+    if sum == 0.0 {
+        println!("sum is zero");
+    }
+
     for i in 0..x.len() {
         result[i] = x[i].exp() / sum;
     }

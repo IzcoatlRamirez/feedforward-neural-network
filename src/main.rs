@@ -7,7 +7,7 @@ mod network;
 mod numrs;
 use dataframe::datacsv::read_data_csv;
 use serde::{Deserialize, Serialize};
-use numrs::metrics::accuracy_score_ohe;
+use numrs::{math::normalize_ouput, metrics::accuracy_score_ohe};
 
 #[derive(Debug, Deserialize, Serialize)]
 struct Person {
@@ -23,16 +23,15 @@ struct Person {
 }
 /*
 Pendiente:
-    - implementar ajuste de los bias
+    - implementar ajuste de los bias (muy importante)  ✅
     - evitar la explosion del gradiente (mantener los pesos y bias entre rangos de [-1, 1] y 
-    mantener el gradiente entre rangos de [-5, 5] o [-10, 10] para evitar la explosion del gradiente)
-    - revisar estabilidad 
-
+    mantener el gradiente entre rangos de [-5, 5] o [-10, 10] para evitar la explosion del gradiente)   ✅
+    - fix softmax produce NaN
+    - implementar inicializacion de pesos y bias con Xavier o He?
 
 Notas:
-    - al convertir los outputs en etiqutas definidas , si estos contienen NaN (por la explosion del gradiente)
-    se convierten en un tipo de etiqueta que crea un falso acurracy que no cambia con las iteraciones puesto que ya siempre produce
-    esos nan creando esas falsas etiquetas problematicas
+    - la funcion de activacion softmax produce NaN, revisar
+    - accuracy mas alto alcanzado: 0.73
 */
 
 fn main() {
@@ -42,20 +41,20 @@ fn main() {
     let (x, y) = read_data_csv::<_, Person>(path, num_classes).unwrap();
     let (x_train, x_test, y_train, y_test) = dataframe::df::simple_split_one_hot(x, y, 0.70);
 
-    let mut nn = network::NeuralNetwork::new(8, 8, "mse".to_string(), "gd".to_string(), "relu".to_string());
-
+    let mut nn = network::NeuralNetwork::new(16, 8, "mse".to_string(), "gd".to_string(), "relu".to_string());
+    nn.add(8, "relu".to_string());
     nn.add(4, "relu".to_string());
     nn.add(2, "sigmoid".to_string());
 
     let x_train_scaled = numrs::scaler::standard_scaler(x_train.clone());
 
-    nn.fit(x_train_scaled, y_train, 0.1, 1);
+    nn.fit(x_train_scaled, y_train, 0.00000000001, 10);
 
     let x_test_scaled = numrs::scaler::standard_scaler(x_test.clone()); 
 
     let mut test = Vec::new();
     for i in 0..x_test.len() {
-        test.push(nn.forward(x_test_scaled[i].clone()));
+        test.push(normalize_ouput(nn.forward(x_test_scaled[i].clone())));
     }
 
     let accuracy = accuracy_score_ohe(y_test, test);

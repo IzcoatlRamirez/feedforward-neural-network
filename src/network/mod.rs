@@ -1,6 +1,5 @@
 use crate::gradient_descend::{adjust_weights, calculate_deltas};
 use crate::layer::Layer;
-use crate::numrs::math::normalize_ouput;
 pub struct NeuralNetwork {
     pub loss: String,
     pub optimizer: String,
@@ -23,13 +22,12 @@ impl NeuralNetwork {
             layers: vec![input],
         }
     }
-
     pub fn forward(&mut self, inputs: Vec<f64>) -> Vec<f64> {
         let mut output = inputs.clone();
         for i in 0..self.layers.len() {
             output = self.layers[i].forward(output);
         }
-        normalize_ouput(output)
+        output
     }
 
     //ahora la etiqueta del ejemplo es un vector one-hot-encoding
