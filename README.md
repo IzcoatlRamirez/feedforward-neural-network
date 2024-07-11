@@ -1,2 +1,2 @@
-###highest accuracy achieved
-![accuracy][./accuracy.jpg]
+# Highest Accuracy Achieved
+![Accuracy](./accuracy.jpg)
