@@ -22,15 +22,7 @@ struct Person {
     outcome: i32,
 }
 /*
-Pendiente:
-    - implementar ajuste de los bias (muy importante)  ✅
-    - evitar la explosion del gradiente (mantener los pesos y bias entre rangos de [-1, 1] y 
-    mantener el gradiente entre rangos de [-5, 5] o [-10, 10] para evitar la explosion del gradiente)   ✅
-    - fix softmax produce NaN
-    - implementar inicializacion de pesos y bias con Xavier o He?
-
 Notas:
-    - la funcion de activacion softmax produce NaN, revisar
     - accuracy mas alto alcanzado: 0.73
 */
 
@@ -48,7 +40,7 @@ fn main() {
 
     let x_train_scaled = numrs::scaler::standard_scaler(x_train.clone());
 
-    nn.fit(x_train_scaled, y_train, 0.00000000001, 10);
+    nn.fit(x_train_scaled, y_train, 0.00000001, 10);
 
     let x_test_scaled = numrs::scaler::standard_scaler(x_test.clone()); 
 
@@ -59,6 +51,7 @@ fn main() {
 
     let accuracy = accuracy_score_ohe(y_test, test);
     println!("Accuracy: {}", accuracy);
+  
 
 
 }

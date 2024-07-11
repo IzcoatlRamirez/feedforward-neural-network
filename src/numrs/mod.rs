@@ -1,8 +1,11 @@
 #![allow(dead_code)]
 pub mod randgen {
+    use rand::distributions::Distribution;
     use rand::rngs::StdRng;
     use rand::Rng;
     use rand::SeedableRng;
+    use rand_distr::Normal;
+
     //use crate::numrs::math::round_to_n_decimals;
     pub fn randfloat(low: f64, high: f64, n: i32, seed: u64) -> Vec<f64> {
         let mut numbers = Vec::new();
@@ -47,13 +50,49 @@ pub mod randgen {
         }
         return numbers;
     }
+
+    
+    pub fn xavier_initialization(rows: usize, cols: usize) -> Vec<Vec<f64>> {
+        let mut rng = rand::thread_rng();
+        let limit = (6.0 / (rows as f64 + cols as f64)).sqrt();
+        let between = rand::distributions::Uniform::new(-limit, limit);
+        
+        (0..rows)
+            .map(|_| (0..cols).map(|_| between.sample(&mut rng)).collect())
+            .collect()
+    }
+
+    pub fn xavier_initialization_vec(n: usize) -> Vec<f64> {
+        let mut rng = rand::thread_rng();
+        let limit = (6.0 / n as f64).sqrt();
+        let between = rand::distributions::Uniform::new(-limit, limit);
+        
+        (0..n).map(|_| between.sample(&mut rng)).collect()
+    }
+
+    pub fn he_initialization_vec(n: usize) -> Vec<f64> {
+        let mut rng = rand::thread_rng();
+        let std_dev = (2.0 / n as f64).sqrt();
+        let normal = Normal::new(0.0, std_dev).expect("Failed to create normal distribution");
+        
+        (0..n).map(|_| normal.sample(&mut rng)).collect()
+    }
+
+    pub fn he_initialization(rows: usize, cols: usize) -> Vec<Vec<f64>> {
+        let mut rng = rand::thread_rng();
+        let std_dev = (2.0 / rows as f64).sqrt();
+        let normal = Normal::new(0.0, std_dev).expect("Failed to create normal distribution");
+        
+        (0..rows)
+            .map(|_| (0..cols).map(|_| normal.sample(&mut rng)).collect())
+            .collect()
+    }
+
 }
 
-/*todas las funciones presentan desbordamiento de valores */
 #[allow(dead_code)]
 pub mod math {
 
-    /*funcion que recibe un vector y el mayor de sus elementos los convierte en numero y los demas en 0 y retorna el vector resultante*/
     pub fn normalize_ouput(output: Vec<f64>) -> Vec<f64> {
         let max_index = find_max_index(output.clone());
 
@@ -226,13 +265,13 @@ pub mod metrics {
     pub fn accuracy_score_ohe(y_true: Vec<Vec<i32>>, y_pred: Vec<Vec<f64>>) -> f64 {
         let mut correct = 0;
         for i in 0..y_true.len() {
-            println!("i : {:?}", i);
+            //println!("i : {:?}", i);
             if is_equal_vec(y_true[i].clone(), y_pred[i].clone()) {
-                println!("is equal y_true: {:?} y_pred: {:?}", y_true[i], y_pred[i]);
+                //println!("is equal y_true: {:?} y_pred: {:?}", y_true[i], y_pred[i]);
                 correct += 1;
             }
             else {
-                println!("not equal y_true: {:?} y_pred: {:?}", y_true[i], y_pred[i]);
+                //println!("not equal y_true: {:?} y_pred: {:?}", y_true[i], y_pred[i]);
             
             }
         }

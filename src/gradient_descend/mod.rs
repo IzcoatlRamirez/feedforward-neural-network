@@ -7,7 +7,7 @@ fn gd_ac_aa_4_outputlayer(
     nn: &mut NeuralNetwork,
     activation: Vec<f64>,
     prediction: Vec<i32>,
-) -> Vec<f64> {
+) ->Vec<f64> {
     match nn.loss.as_str() {
         "mse" => mse_derivative(activation, prediction),
         "cross_entropy" => cross_entropy_derivative(activation, prediction),
@@ -34,6 +34,7 @@ pub fn calculate_deltas(nn: &mut NeuralNetwork, activation: Vec<f64>, prediction
     }
 
 }
+
 
 fn update_weights(l: &mut Layer, gradient: Vec<Vec<f64>>, learning_rate: f64) {
     for i in 0..l.rows {

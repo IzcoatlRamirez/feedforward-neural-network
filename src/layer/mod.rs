@@ -1,7 +1,7 @@
 use crate::activation_fn::derivate::{relu_derivative, sigmoid_derivative, softmax_derivative};
 use crate::activation_fn::{relu, sigmoid, softmax};
 use crate::numrs::math::{add_vecs, lineal_transform, round_vec};
-use crate::numrs::randgen::{randfloatmatrix, rand_vec};
+use crate::numrs::randgen::{xavier_initialization,he_initialization, xavier_initialization_vec,he_initialization_vec};
 #[derive(Clone)]
 pub struct Layer {
     pub weights: Vec<Vec<f64>>, 
@@ -24,9 +24,19 @@ impl Layer {
     */
     pub fn new(units: i32, input_dim: i32, activation: String) -> Layer {
         Layer {
-            weights: randfloatmatrix(-1.0, 1.0, units, input_dim),
-            biases: rand_vec(-1.0, 1.0, units),
-            //biases: vec![0.0; units as usize],
+            weights: match activation.as_str() {
+                "sigmoid" => xavier_initialization(units as usize, input_dim as usize),
+                "relu" => he_initialization(units as usize, input_dim as usize),
+                "softmax" => xavier_initialization(units as usize, input_dim as usize),
+                _ => panic!("Activation function not implemented"),
+                
+            },
+            biases: match activation.as_str() {
+                "sigmoid" => xavier_initialization_vec(units as usize),
+                "relu" => he_initialization_vec(units as usize),
+                "softmax" => xavier_initialization_vec(units as usize),
+                _ => panic!("Activation function not implemented"),
+            },
             activation,
             rows: units,
             cols: input_dim,

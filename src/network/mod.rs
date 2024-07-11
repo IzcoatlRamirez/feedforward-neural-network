@@ -32,14 +32,15 @@ impl NeuralNetwork {
 
     //ahora la etiqueta del ejemplo es un vector one-hot-encoding
     pub fn fit(&mut self, x: Vec<Vec<f64>>, y: Vec<Vec<i32>>, learning_rate: f64, epochs: i32) {
+        println!("len of x: {:?}", x.len());
         for i in 0..epochs {
-            println!("------------------------> Epoch: {:?}", i);
-            self.show_layers();
-            for i in 0..x.len() {
+            println!("Epoch: ------------------------> {:?}", i);
+            //self.show_layers();
+            for j in 0..x.len() {
                 match self.optimizer.as_str() {
                     "gd" => {
-                        let output = self.forward(x[i].clone());
-                        calculate_deltas(self, output, y[i].clone());
+                        let output = self.forward(x[j].clone());
+                        calculate_deltas(self, output, y[j].clone());
                         adjust_weights(self, learning_rate);
                     }
                     _ => {

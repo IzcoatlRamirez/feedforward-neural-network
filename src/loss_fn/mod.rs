@@ -20,3 +20,23 @@ pub mod derivate {
         return result;
     }
 }
+
+#[allow(dead_code)]
+pub mod loss{
+    pub fn mse(activation: Vec<f64>, prediction: Vec<i32>) -> f64 {
+        let mut result = 0.0;
+        for i in 0..activation.len() {
+            result += (activation[i] - (prediction[i] as f64)).powi(2);
+        }
+        return result / (2 as f64);
+    }
+    
+    pub fn cross_entropy(activation: Vec<f64>, prediction: Vec<i32>) -> f64 {
+        let mut result = 0.0;
+        for i in 0..activation.len() {
+            result += -1.0 * (prediction[i] as f64) * activation[i].ln();
+        }
+        return result;
+    }
+    
+}

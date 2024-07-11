@@ -10,3 +10,4 @@ rand="*"
 serde_json ="*"
 csv = "1.1"
 serde = { version = "1.0", features = ["derive"] }
+rand_distr = "0.4"
